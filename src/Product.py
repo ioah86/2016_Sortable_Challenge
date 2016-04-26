@@ -62,6 +62,16 @@ class Product:
     def getAnnouncementDate(self):
         return self.__a_d
 
+    def __eq__(self,other):
+        return (self.__name == other.getName() and
+                self.__manufacturer == other.getManufacturer() and
+                self.__family == other.getFamily() and
+                self.__model == other.getModel() and
+                self.__a_d == other.getAnnouncementDate())
+
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return """Name: %s
 Manufacturer: %s
