@@ -5,6 +5,7 @@
 
 import unittest
 from Product import Product
+import json
 
 class TestProduct(unittest.TestCase):
     """
@@ -20,7 +21,8 @@ class TestProduct(unittest.TestCase):
         "family":"Cyber-shot",
         "announced-date":"2010-01-06T19:00:00.000-05:00"
         We test if the Product is correctly initiated, if all the
-        getters work properly and the string representation is right.
+        getters work properly, the string representation is right and
+        the json representation is right.
         """
         name = "Sony_Cyber-shot_DSC-W310"
         manufacturer = "Sony"
@@ -32,6 +34,7 @@ Manufacturer: Sony
 Family: Cyber-shot
 Model: DSC-W310
 Announced Date: 2010-01-06T19:00:00.000-05:00"""
+        jsonRep="""{"product_name":"Sony_Cyber-shot_DSC-W310","manufacturer":"Sony","model":"DSC-W310","family":"Cyber-shot","announced-date":"2010-01-06T19:00:00.000-05:00"}"""
         try:
             testProduct = Product(name,manufacturer,family,model,a_d)
         except:
@@ -48,6 +51,8 @@ Announced Date: 2010-01-06T19:00:00.000-05:00"""
                          "The announcement date was not stored properly")
         self.assertEqual(stringRep,str(testProduct),
                          "String representation was not correct")
+        self.assertEqual(json.loads(jsonRep),json.loads(testProduct.toJSON()),
+                         "JSON representation was not correct")
 
 
     def test_Invalid_Types(self):

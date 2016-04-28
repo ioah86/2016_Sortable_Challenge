@@ -5,6 +5,7 @@
 
 import unittest
 from Listing import Listing
+import json
 
 class TestProduct(unittest.TestCase):
     """
@@ -20,7 +21,8 @@ class TestProduct(unittest.TestCase):
         "currency":"CAD",
         "price":"499.99"
         We test if the Listing is correctly initiated, if all the
-        getters work properly and the string representation is right.
+        getters work properly, the string representation is right
+        and the JSON representation is right.
         """
         title = "Fujifilm FinePix REAL 3D W3 10 MP Digital Camera\
  with Dual 3x Optical Zoom Lenses (Black)"
@@ -32,6 +34,7 @@ class TestProduct(unittest.TestCase):
 Manufacturer: Fujifilm Canada
 Currency: CAD
 Price: 499.99"""
+        jsonRep = """{"title":"Fujifilm FinePix REAL 3D W3 10 MP Digital Camera with Dual 3x Optical Zoom Lenses (Black)","manufacturer":"Fujifilm Canada","currency":"CAD","price":"499.99"}"""
         try:
             testListing = Listing(title,manufacturer,currency,price)
         except:
@@ -46,6 +49,8 @@ Price: 499.99"""
                          "The price was not stored properly")
         self.assertEqual(stringRep, str(testListing),
                          "The string representation was not correct")
+        self.assertEqual(json.loads(jsonRep),json.loads(testListing.toJSON()),
+                         "The JSON representation was not correct")
         
 
     def test_Invalid_Types(self):

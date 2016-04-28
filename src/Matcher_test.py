@@ -6,6 +6,10 @@ import unittest
 from Product import Product
 from Listing import Listing
 from Matcher import Matcher
+from ProductIterator import ProductIterator
+from ListingIterator import ListingIterator
+import os
+import json
 
 class TestMatcher(unittest.TestCase):
     """
@@ -60,7 +64,7 @@ class TestMatcher(unittest.TestCase):
         price ="199.96"
         testListing = Listing(title,manufacturer,currency,price)
         res = Matcher.is_match(testProduct,testListing)
-        self.assertEqual(1,res,"Matching with \"for\" or \"with\" was not fulfilled")
+        self.assertEqual(2,res,"Matching with \"for\" or \"with\" was not fulfilled")
         #4
         name= "Panasonic-FH5"
         manufacturer = "Panasonic"
@@ -87,3 +91,50 @@ class TestMatcher(unittest.TestCase):
         res = Matcher.is_match(testProduct,testListing)
         self.assertEqual(-1,res,
                          "Mismatching different models not fulfilled")
+
+
+    def test_Matching_Thread(self):
+        """
+        Runs the Thread with startIndex 0, the complete products from
+        ../test_files/sortable_products.txt
+        and the partial listings from
+        ../test_files/part_of_challenge_listings.txt
+        The only expected file that is generated is
+        Canon_PowerShot_SX130_IS_0.txt
+        And its content should be two listings, separated by ",",
+        namely
+        {"title":"Canon PowerShot SX130IS 12.1 MP Digital Camera with\
+ 12x Wide Angle Optical Image Stabilized Zoom with 3.0-Inch LCD",\
+"manufacturer":"Canon Canada","currency":"CAD","price":"199.96"},\
+{"title":"Canon PowerShot SX130IS 12.1 MP Digital Camera with 12x\
+ Wide Angle Optical Image Stabilized Zoom with 3.0-Inch LCD",\
+"manufacturer":"Canon Canada","currency":"CAD","price":"209.00"}
+        """
+        l_it =\
+            ListingIterator("../test_files/part_of_challenge_listings.txt") 
+        p_it = ProductIterator("../test_files/sortable_products.txt")
+        name = "Canon_PowerShot_SX130_IS_0.txt"
+        products = {}
+        for p in p_it:
+            manu = p.getManufacturer().lower()
+            if manu in products:
+                products[manu].append(p)
+            else:
+                products[manu] = [p]
+        listings = [l for l in l_it]
+        matcher_thread = Matcher(0,products,listings)
+        matcher_thread.start()
+        matcher_thread.join()
+        self.assertTrue(os.path.isfile(name))
+        f = open(name,"r")
+        cont=f.read()
+        f.close()
+        cont = "[" + cont + "]"
+        lstRes = json.loads(cont)
+        self.assertEqual(len(lstRes),2,"The matching did not have the\
+ right length")
+        for res in lstRes:
+            if (len(list(filter(lambda x:
+                                json.loads(x.toJSON())!=res,listings)))==0):
+                self.fail("The file did not contain an original listing")
+        os.remove(name)

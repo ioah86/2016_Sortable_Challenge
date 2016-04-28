@@ -3,6 +3,9 @@
 .. moduleauthor:: Albert Heinle<albert.heinle@gmail.com>
 """
 
+import json
+
+
 class Listing:
     """
     This class represents listings as provided in the sortable
@@ -72,3 +75,12 @@ Price: %s"""%(self.__title,
               self.__manufacturer,
               self.__currency,
               self.__price)
+
+    def toJSON(self):
+        jsonDict = {
+            "title":self.__title,
+            "manufacturer":self.__manufacturer,
+            "currency":self.__currency,
+            "price":self.__price
+        }
+        return json.dumps(jsonDict)

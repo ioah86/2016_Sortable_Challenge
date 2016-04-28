@@ -7,6 +7,7 @@ import threading
 import constants
 from nltk.tokenize import word_tokenize
 
+
 class Matcher(threading.Thread):
     """
     This is one of an army of in parallel running Threads.
@@ -38,10 +39,60 @@ class Matcher(threading.Thread):
                                class is trying to match.
         :type  listings_chunk: list(Listing)
         """
+        threading.Thread.__init__(self)
         self.__beginIndex = beginIndex
         self.__products_dict = products_dict
         self.__listings_chunk = listings_chunk
+        self.__matches_dict = {}
 
+    
+    def __findPositionInHashTable(self,listing):
+        """
+        Given a listing of type Listing, this function finds the
+        respective position of possible products (based on the
+        manufacturer) in the given products dictionary.
+        It returns an empty string if no such position can be
+        determined, or the key-value.
+
+        :param listing: The listing we try to find a position for
+        :type  listing: Listing
+        """
+        manu_lower = listing.getManufacturer().lower()
+        if manu_lower in self.__products_dict:
+            return manu_lower
+        else:
+            manu_lower_wt = word_tokenize(manu_lower)
+            matches = []
+            for m in manu_lower_wt:
+                if m in self.__products_dict:
+                    matches.append(m)
+            if (len(matches)!=1):
+                #we don't want to take the risk in case of ambiguity
+                return ""
+            return matches[0]
+    
+
+    def __getMatchingsForListing(self, listing):
+        """
+        Given a listing of type Listing, this function matches the
+        listing to possible products in the internal dictionary of
+        products. It returns a list of such products (or an empty list
+        if there are none).
+
+        :param listing: The listing we try to find a position for
+        :type  listing: Listing
+        """
+        hashEntry = self.__findPositionInHashTable(listing)
+        if hashEntry == "":
+            return []
+        potProducts = self.__products_dict[hashEntry]
+        matches = []
+        for p in potProducts:
+            match_outp = Matcher.is_match(p,listing)
+            if match_outp>=1: #TODO: log if it is 0
+                matches.append((match_outp,p))
+        return matches
+        
     
     def run(self):
         """
@@ -51,17 +102,48 @@ class Matcher(threading.Thread):
         variable representing the begin index (unique to the thread),
         where a record of the match is given.
         """
-        pass
+        for l in self.__listings_chunk:
+            matching = self.__getMatchingsForListing(l)
+            if len(matching)!=1:
+                matching = list(filter(lambda x: x[0] == 2,matching))
+                if (len(matching)!=1):
+                    continue #in this case, ambiguity was there #TODO:
+                             #log
+            newId = matching[0][1].getName()
+            if newId in self.__matches_dict:
+                self.__matches_dict[newId].append(l)
+            else:
+                self.__matches_dict[newId] = [l]
+        self.__writeMatchesToFiles()
+        
+
+    def __writeMatchesToFiles(self):
+        """
+        Assuming that the matches internal dictionary has already been
+        filled, this function writes the files containing the matches
+        for each product. In particular, for each product name s, a
+        file named s_i.txt, where i is the unique begin index of this
+        thread, will be generated containing all the listings that
+        match s. This file will only be generated if s had a matching
+        though.
+        """
+        for s in self.__matches_dict:
+            l_matchings = self.__matches_dict[s]
+            l_matchings = ",".join(map(lambda x: x.toJSON(), l_matchings))
+            f = open("%s_%d.txt"%(s,self.__beginIndex),'w')
+            f.write(l_matchings)
+            f.close()
 
 
     def is_match(product, listing):
         """
         This function is passed a variable product of type Product,
-        a variable listing of type Listing. It returns three possible
+        a variable listing of type Listing. It returns several possible
         values.
         -1 - No way it is a match
          0 - It could or could not be a match
-         1 - I am very certain it is a match
+         1 - Manufacturer and Model are given
+         2 - Manufacturer, Model and family are found
         
         The algorithm idea is the following:
         - Tokenize the words in the title.
@@ -84,7 +166,7 @@ class Matcher(threading.Thread):
           SX-130-IS". For this implementation, we assume that we
           should remove any letters like '_', '-' and ' ' and then try
           to find  the model number or so. We return 1, if we find the
-          manufacturer and the model (and optimally the family)
+          manufacturer and the model, and, if available, the family
           in this simplistic model.
           We return 0 if we find the manufacturer, the family (if
           given), but not the model. For all the other cases we just
@@ -138,7 +220,12 @@ class Matcher(threading.Thread):
                 family_found = False
         else:
             family_found = False
-        if manu_found and model_found:
+        if (family_found and
+            model_found and
+            manu_found):
+            return 2
+        if (manu_found and
+            model_found):
             return 1
         if manu_found and family_found:
             return 0

@@ -3,6 +3,7 @@
 .. moduleauthor:: Albert Heinle<albert.heinle@gmail.com>
 """
 
+import json
 
 class Product:
     """
@@ -82,3 +83,15 @@ Announced Date: %s"""%(self.__name,
                        self.__family,
                        self.__model,
                        self.__a_d)
+
+    def toJSON(self):
+        jsonDict = {
+            "product_name":self.__name,
+            "manufacturer":self.__manufacturer,
+            "model":self.__model,
+            "family":self.__family,
+            "announced-date":self.__a_d
+        }
+        if jsonDict["family"]=="":
+            jsonDict.pop("family",None)
+        return json.dumps(jsonDict)
