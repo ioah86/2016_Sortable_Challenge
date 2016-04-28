@@ -20,6 +20,7 @@ class Listing:
         :param title:        Description of product for sale
         :type  title:        String
         :param manufacturer: Who manufactures the product for sale
+                             (can be empty)
         :type  manufacturer: String
         :param currency:     currency code, e.g. USD, CAD, GBP, etc.
         :type  currency:     String
@@ -35,8 +36,8 @@ class Listing:
         if title.strip()=="":
             raise ValueError("title was an empty string")
         self.__title = title.strip()
-        if manufacturer.strip()=="":
-            raise ValueError("manufacturer was an empty string")
+        #if manufacturer.strip()=="":
+        #    raise ValueError("manufacturer was an empty string")
         self.__manufacturer = manufacturer.strip()
         if currency.strip()=="":
             raise ValueError("currency was an empty string")

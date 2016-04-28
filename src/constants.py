@@ -13,3 +13,16 @@ Assumption:
 - The languages given are English, German, French
 """
 separator_words = ["for", "with","pour","avec","mit","für","fuer"]
+
+
+"""
+The following variable encodes the number of threads running at most
+in parallel.
+"""
+number_of_threads = 4
+
+"""
+The following variable encodes the size of chunks of listings that are
+handled by each Thread
+"""
+chunk_size = 1000

@@ -3,12 +3,13 @@
 .. moduleauthor:: Albert Heinle<albert.heinle@gmail.com>
 """
 
-import threading
+#import threading
+import multiprocessing
 import constants
 from nltk.tokenize import word_tokenize
 
 
-class Matcher(threading.Thread):
+class Matcher(multiprocessing.Process):
     """
     This is one of an army of in parallel running Threads.
     It receives a reference to a complete dictionary of products
@@ -39,7 +40,7 @@ class Matcher(threading.Thread):
                                class is trying to match.
         :type  listings_chunk: list(Listing)
         """
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.__beginIndex = beginIndex
         self.__products_dict = products_dict
         self.__listings_chunk = listings_chunk

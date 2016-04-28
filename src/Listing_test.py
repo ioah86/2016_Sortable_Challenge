@@ -117,14 +117,14 @@ Price: 499.99"""
         if not testPassed:
             self.fail("It was possible to provide an empty string to\
  title")
-        try:
-            testListing = Listing(title,"",currency,price)
-            testPassed = 0
-        except:
-            pass
-        if not testPassed:
-            self.fail("It was possible to provide an empty string to\
- manufacturer")
+        # try:
+ #            testListing = Listing(title,"",currency,price)
+ #            testPassed = 0
+ #        except:
+ #            pass
+ #        if not testPassed:
+ #            self.fail("It was possible to provide an empty string to\
+ # manufacturer")
         try:
             testListing = Listing(title,manufacturer,"",price)
             testPassed = 0
