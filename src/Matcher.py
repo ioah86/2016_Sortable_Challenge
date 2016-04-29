@@ -10,7 +10,8 @@ from nltk.tokenize import word_tokenize
 import os
 import logging
 
-logging.basicConfig(filename="Matcher.log", level = logging.DEBUG)
+logging.basicConfig(level = logging.DEBUG,
+                    handlers = [logging.FileHandler("Matcher.log", mode="w")])
 
 
 class Matcher(multiprocessing.Process):
@@ -69,6 +70,21 @@ class Matcher(multiprocessing.Process):
         :type  listing: Listing
         """
         manu_lower = listing.getManufacturer().lower()
+        if manu_lower =="":
+            #In this case, we should "try" to find a possible
+            #manufacturer based on Heuristics
+            count = 0
+            tempRes = ""
+            title_tt = word_tokenize(listing.getTitle())
+            title_tt = list(map(lambda x: x.lower, title_tt))
+            for p in self.__products_dict:
+                if p in title_tt:
+                    count += 1
+                    tempRes = p
+            if count != 1:
+                #don't risk ambiguity
+                return ""
+            return tempRes
         if manu_lower in self.__products_dict:
             return manu_lower
         else:
@@ -103,6 +119,39 @@ class Matcher(multiprocessing.Process):
             if match_outp>=1:
                 matches.append((match_outp,p))
         return matches
+    
+
+    def __filterMatchings(self, matchings):
+        """
+        This function gets called when there is more than one matching
+        in the list of matchings in the run function, and it tries to
+        filter out one specific matching out of it. If all the
+        matchings had a matching factor of 1, empty list is returned.
+
+        ASSUMPTIONS:
+        - There is more than one matching in the list
+        
+        :param matchings: The list of matchings
+        :type  matchings: list((Int, Product))
+        """
+        twoMatches = list(filter(lambda x: x[0] == 2,matchings))
+        if len(twoMatches)<=1:
+            #Easy case: we already found it, or there was no clear match
+            return twoMatches
+        #find the most sound match
+        result = []
+        for i in range(len(twoMatches)):
+            for j in range(i+1,len(twoMatches)):
+                if (twoMatches[i][1].getModel() in
+                    twoMatches[j][1].getModel()):
+                    result.append(twoMatches[j])
+                elif (twoMatches[j][1].getModel() in
+                      twoMatches[i][1].getModel()):
+                    result.append(twoMatches[i])
+        if result == []:
+            return twoMatches
+        else:
+            return result
         
     
     def run(self):
@@ -116,7 +165,7 @@ class Matcher(multiprocessing.Process):
         for l in self.__listings_chunk:
             matching = self.__getMatchingsForListing(l)
             if len(matching)!=1:
-                matching = list(filter(lambda x: x[0] == 2,matching))
+                matching = self.__filterMatchings(matching)
                 if (len(matching)!=1):
                     if (len(matching)==0):
                         logging.debug("Could not find match for\
@@ -154,6 +203,34 @@ class Matcher(multiprocessing.Process):
                      mode='w')
             f.write(l_matchings)
             f.close()
+
+    
+    def isInTokenizedString(s,ts):
+        """
+        This function takes in a string s and a list of strings ts and
+        determines if s can be found in ts (maybe by even merging some
+        consecutive tokens).
+
+        Assumptions:
+        - the elements in ts are all lowercase and don't have the
+          symbols '-',' ' and '_'
+
+        :param s:  The string we want to find
+        :type  s:  String
+        :param ts: The list of tokens where we want to find s
+        :type  ts: [String]
+        """
+        s = s.lower()
+        s = "".join(list(filter(lambda x: not x in "_- ",s)))
+        if s in ts:
+            return True
+        tempString = ""
+        for i in range(len(ts)):
+            tempString += ts[i]
+            if tempString==s:
+                return True
+            if not (tempString in s):
+                tempString = ""
 
 
     def is_match(product, listing):
@@ -216,29 +293,33 @@ class Matcher(multiprocessing.Process):
             token_title    = token_title[:minIndex]
             token_title_lc = token_title_lc[:minIndex]
         #make a consecutive string out of it
-        merged_tt = "".join(token_title_lc)
-        merged_tt = "".join(list(filter(lambda x: not x in "_- ",merged_tt)))
+        merged_tt = list(map(lambda x:
+                             "".join(list(filter(lambda y: not y in "_- ",x))),
+                             token_title_lc))
         #Now we try to find the model
         model = product.getModel().lower()
-        model = "".join(list(filter(lambda x: not x in "_- ",model)))
-        if model in merged_tt:
-            model_found = True
-        else:
-            model_found = False
+        # model = "".join(list(filter(lambda x: not x in "_- ",model)))
+        # if model in merged_tt:
+        #     model_found = True
+        # else:
+        #     model_found = False
+        model_found = Matcher.isInTokenizedString(model,merged_tt)
         #Now we try to find the manufacturer
         manufacturer = product.getManufacturer().lower()
-        if manufacturer in merged_tt:
-            manu_found = True
-        else:
-            manu_found = False
+        # if manufacturer in merged_tt:
+        #     manu_found = True
+        # else:
+        #     manu_found = False
+        manu_found = Matcher.isInTokenizedString(manufacturer,merged_tt)
         #if the family is given, we also try to find it:
         family = product.getFamily().lower()
-        family = "".join(list(filter(lambda x: not x in "_- ",family)))
+        #family = "".join(list(filter(lambda x: not x in "_- ",family)))
         if family!="":
-            if family in merged_tt:
-                family_found = True
-            else:
-                family_found = False
+            # if family in merged_tt:
+            #     family_found = True
+            # else:
+            #     family_found = False
+            family_found = Matcher.isInTokenizedString(family,merged_tt)
         else:
             family_found = False
         if (family_found and

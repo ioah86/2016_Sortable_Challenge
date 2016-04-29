@@ -27,6 +27,7 @@ class TestMatcher(unittest.TestCase):
         4. A mismatch with "for" and "with"
         5. Same manufacturer, different models
         6. Old mismatch from observations
+        7. Another mismatch from observations
         """
         #1
         name = "Sony_Cyber-shot_DSC-W310"
@@ -106,6 +107,24 @@ class TestMatcher(unittest.TestCase):
         manufacturer="Nikon"
         currency="USD"
         price="158.54"
+        testListing = Listing(title,manufacturer,currency,price)
+        res = Matcher.is_match(testProduct,testListing)
+        self.assertEqual(2,res,
+                         "Matching of clear match did not work")
+        #7
+        name="Canon_EOS_60D"
+        manufacturer="Canon"
+        model="60D"
+        family="EOS"
+        a_d = "2010-08-25T20:00:00.000-04:00"
+        testProduct = Product(name,manufacturer,family,model,a_d)
+        title="Canon EOS 60D DSLR Camera with Canon EF-S 18-135mm\
+ f/3.5-5.6 IS Lens and Tamron Zoom Telephoto AF 70-300mm\
+ f/4-5.6 Di LD Macro Autofocus Lens + SSE Best Value 32GB\
+        Accessory Package"
+        manufacturer="Sunset Electronics"
+        currency="USD"
+        price="1899.99"
         testListing = Listing(title,manufacturer,currency,price)
         res = Matcher.is_match(testProduct,testListing)
         self.assertEqual(2,res,
