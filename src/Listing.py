@@ -13,7 +13,7 @@ class Listing:
     http://sortable.com/challenge.
     """
     
-    def __init__(self,title,manufacturer,currency,price):
+    def __init__(self,title,manufacturer,currency,price,jsonString=None):
         """
         The constructor for Listing.
 
@@ -26,16 +26,20 @@ class Listing:
         :type  currency:     String
         :param price:        price, e.g. 19.99, 100.00
         :type  price:        String
+        :param jsonString:   The JSON representation of the product as
+                             given in the file
+        :type jsonString:    String or None
         :raises:             TypeError, ValueError
         """
         if (type(title)!=str or
             type(manufacturer) != str or
             type(currency)!= str or
-            type(price)!= str):
+            type(price)!= str or
+            (jsonString and type(jsonString)!=str)):
             raise TypeError("Incorrect types given as input")
         if title.strip()=="":
             raise ValueError("title was an empty string")
-        self.__title = title.strip()
+        self.__title = title
         #if manufacturer.strip()=="":
         #    raise ValueError("manufacturer was an empty string")
         self.__manufacturer = manufacturer.strip()
@@ -45,6 +49,7 @@ class Listing:
         if price.strip()=="":
             raise ValueError("price was an empty string")
         self.__price = price.strip()
+        self.__jsonString = jsonString
         
 
     def getTitle(self):
@@ -78,6 +83,8 @@ Price: %s"""%(self.__title,
               self.__price)
 
     def toJSON(self):
+        if self.__jsonString:
+            return self.__jsonString
         jsonDict = {
             "title":self.__title,
             "manufacturer":self.__manufacturer,

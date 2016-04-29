@@ -42,7 +42,7 @@ def get_products(products_file):
     return products
 
 
-def run_matching(products,listings):
+def run_matching(products_file,listings_file):
     """
     This function obtains a filename for products files and a filename
     for listings, and calls the Matcher threads to produce matchings.
@@ -55,8 +55,8 @@ def run_matching(products,listings):
     :param listings: A filename to a file containing listings
     :type  listings: String
     """
-    products = get_products(opts.products_file)
-    listings_iter = ListingIterator(opts.listings_file)
+    products = get_products(products_file)
+    listings_iter = ListingIterator(listings_file)
     threads = []
     chunk_count=0
     threads = [None for i in range(constants.number_of_threads)]
@@ -78,8 +78,47 @@ def run_matching(products,listings):
     for i in threads:
         if i != None:
             i.join()
+    mergeFiles(products)
     
-    
+
+def mergeFiles(products):
+    """
+    This function takes the files produced by the Matchers, and
+    creates the result file by merging the files together.
+    It also deletes all unneeded files.
+
+    :param products: A dictionary of products, hashed by manufacturer
+    :type  products: dict(String:[Product])
+    """
+    res = open(os.path.join(constants.result_path,
+                            constants.result_file),
+               encoding='utf-8',
+               mode="w")
+    first_entry = True
+    for manu in products:
+        prodArray = products[manu]
+        for p in prodArray:
+            entry_made = False
+            for f in os.listdir(constants.result_path):
+                if f.startswith(p.getName()):
+                    if not entry_made:
+                        begin_string = """{"product_name":"%s",\
+"listings":["""%p.getName()
+                        if not first_entry:
+                            res.write("\n")
+                        else:
+                            first_entry = False
+                        entry_made = True
+                        res.write(begin_string)
+                    else:
+                        res.write(",")
+                    file_obj = open(os.path.join(constants.result_path,f),'r')
+                    lstngs = file_obj.read().strip()
+                    file_obj.close()
+                    res.write(lstngs)
+                    os.remove(os.path.join(constants.result_path,f))
+            if entry_made:
+                res.write("]}")
 
 
 if __name__ == '__main__':

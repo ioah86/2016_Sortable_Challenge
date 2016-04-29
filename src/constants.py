@@ -3,6 +3,8 @@
 .. moduleauthor:: Albert Heinle<albert.heinle@gmail.com>
 """
 
+import os
+
 """
 For the Matcher class, there are certain separator words like "for" and
 "with", which indicate that anything that comes after that in a title
@@ -26,3 +28,16 @@ The following variable encodes the size of chunks of listings that are
 handled by each Thread
 """
 chunk_size = 1000
+
+
+"""
+The following variable provides the path where result files and logs
+should be stored.
+"""
+result_path = os.path.join("..","results")
+
+"""
+The following variable describes the final result file name where all
+the results are stored.
+"""
+result_file = "results.txt"

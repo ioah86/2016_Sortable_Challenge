@@ -9,6 +9,7 @@ from Matcher import Matcher
 from ProductIterator import ProductIterator
 from ListingIterator import ListingIterator
 import os
+import constants
 import json
 
 class TestMatcher(unittest.TestCase):
@@ -25,6 +26,7 @@ class TestMatcher(unittest.TestCase):
         3. A match with "for" and/or "with"
         4. A mismatch with "for" and "with"
         5. Same manufacturer, different models
+        6. Old mismatch from observations
         """
         #1
         name = "Sony_Cyber-shot_DSC-W310"
@@ -91,6 +93,23 @@ class TestMatcher(unittest.TestCase):
         res = Matcher.is_match(testProduct,testListing)
         self.assertEqual(-1,res,
                          "Mismatching different models not fulfilled")
+        #6
+        name="Nikon-s4100"
+        manufacturer="Nikon"
+        model="S4100"
+        family="Coolpix"
+        a_d="2011-02-08T19:00:00.000-05:00"
+        testProduct = Product(name,manufacturer,family,model,a_d)
+        title="Nikon COOLPIX S4100 14 MP Digital Camera with 5x NIKKOR\
+ Wide-Angle Optical Zoom Lens and 3-Inch Touch-Panel LCD\
+ (Black)"
+        manufacturer="Nikon"
+        currency="USD"
+        price="158.54"
+        testListing = Listing(title,manufacturer,currency,price)
+        res = Matcher.is_match(testProduct,testListing)
+        self.assertEqual(2,res,
+                         "Matching of clear match did not work")
 
 
     def test_Matching_Thread(self):
@@ -113,7 +132,8 @@ class TestMatcher(unittest.TestCase):
         l_it =\
             ListingIterator("../test_files/part_of_challenge_listings.txt") 
         p_it = ProductIterator("../test_files/sortable_products.txt")
-        name = "Canon_PowerShot_SX130_IS_0.txt"
+        name = os.path.join(constants.result_path,
+                            "Canon_PowerShot_SX130_IS_0.txt")
         products = {}
         for p in p_it:
             manu = p.getManufacturer().lower()

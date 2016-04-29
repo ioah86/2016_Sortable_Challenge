@@ -49,7 +49,7 @@ class ListingIterator:
         manufacturer = listing_dict["manufacturer"]
         currency = listing_dict["currency"]
         price = listing_dict["price"]
-        return Listing(title,manufacturer,currency,price)
+        return Listing(title,manufacturer,currency,price,line.strip())
 
 
     def __del__(self):

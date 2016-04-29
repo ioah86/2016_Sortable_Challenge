@@ -7,6 +7,10 @@
 import multiprocessing
 import constants
 from nltk.tokenize import word_tokenize
+import os
+import logging
+
+logging.basicConfig(filename="Matcher.log", level = logging.DEBUG)
 
 
 class Matcher(multiprocessing.Process):
@@ -18,7 +22,8 @@ class Matcher(multiprocessing.Process):
     representing the successful matches.
     """
 
-    def __init__(self, beginIndex, products_dict, listings_chunk):
+    def __init__(self, beginIndex, products_dict,
+                 listings_chunk,result_path = constants.result_path):
         """
         The constructor of Matcher. It gets passed a beginIndex
         (unique for each thread; will not be checked),
@@ -28,6 +33,8 @@ class Matcher(multiprocessing.Process):
         (hashed by manufacturer) and a list of listings it tries
         to match. The beginindex is also part of a filename that is
         written, which contains all the found matches.
+        As an optional parameter, the Matcher gets a path to a folder
+        where the final results should be stored.
 
         :param beginIndex: unique beginning index of the chunk this
                            instance tries to match with respect to all
@@ -39,12 +46,15 @@ class Matcher(multiprocessing.Process):
         :param listings_chunk: A list of Listing instances that this
                                class is trying to match.
         :type  listings_chunk: list(Listing)
+        :param result_path: The path to the resulting files
+        :type  result_path: String
         """
         multiprocessing.Process.__init__(self)
         self.__beginIndex = beginIndex
         self.__products_dict = products_dict
         self.__listings_chunk = listings_chunk
         self.__matches_dict = {}
+        self.__result_path = result_path
 
     
     def __findPositionInHashTable(self,listing):
@@ -90,7 +100,7 @@ class Matcher(multiprocessing.Process):
         matches = []
         for p in potProducts:
             match_outp = Matcher.is_match(p,listing)
-            if match_outp>=1: #TODO: log if it is 0
+            if match_outp>=1:
                 matches.append((match_outp,p))
         return matches
         
@@ -108,8 +118,15 @@ class Matcher(multiprocessing.Process):
             if len(matching)!=1:
                 matching = list(filter(lambda x: x[0] == 2,matching))
                 if (len(matching)!=1):
-                    continue #in this case, ambiguity was there #TODO:
-                             #log
+                    if (len(matching)==0):
+                        logging.debug("Could not find match for\
+ listing %s"%str(l))
+                    else:
+                        logging.debug("More than one match for listing\
+ %s:"%str(l))
+                        for p in matching:
+                            logging.debug(str(p[1]))
+                    continue #in this case, ambiguity was there 
             newId = matching[0][1].getName()
             if newId in self.__matches_dict:
                 self.__matches_dict[newId].append(l)
@@ -131,7 +148,10 @@ class Matcher(multiprocessing.Process):
         for s in self.__matches_dict:
             l_matchings = self.__matches_dict[s]
             l_matchings = ",".join(map(lambda x: x.toJSON(), l_matchings))
-            f = open("%s_%d.txt"%(s,self.__beginIndex),'w')
+            f = open(os.path.join(self.__result_path,
+                                  "%s_%d.txt"%(s,self.__beginIndex)),
+                     encoding='utf-8',
+                     mode='w')
             f.write(l_matchings)
             f.close()
 
