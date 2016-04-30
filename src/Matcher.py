@@ -6,7 +6,7 @@
 #import threading
 import multiprocessing
 import constants
-from nltk.tokenize import word_tokenize
+from myNLTK import word_tokenize
 import os
 import logging
 

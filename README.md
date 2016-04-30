@@ -8,37 +8,10 @@ System requirements
 -------------------
 
 I programmed this submission in Python 3. The version I tested it with
-is 3.4.3. As additional package(s) that might be installed via `pip3`, I
-made use of
+is 3.4.3.. There are no additional packages required in this branch.
 
-- nltk (http://www.nltk.org/) - Natural language processing for Python.
-  Steps to install::
-
-    $> pip3 install nltk
-    $> python3
-    Python 3.4.3 (default, Oct 14 2015, 20:28:29) 
-    [GCC 4.8.4] on linux
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import nltk
-    >>> nltk.download()
-    NLTK Downloader
-    ---------------------------------------------------------------------------
-    d) Download   l) List    u) Update   c) Config   h) Help   q) Quit
-    ---------------------------------------------------------------------------
-    Downloader> d all
-    
-  and wait. Afterwards, exit the downloader and Python.
-
-**Remark:** The `d all` command downloads the whole nltk
-functionality, and that might take a moment (depending on your
-internet connection).
-
-**Another Remark:** If you have trouble to install nltk, I have
-written my own primitive tokenizer in the branch `without_nltk` of
-this repository. However, this tokenizer is not as accurate, and one
-might have less sound results with it compared to the results we would
-get with nltk.
-
+**REMARK**: The main branch is using NLTK, and it does the job of
+word-tokenizing in a better way.
 
 A Quick Test:
 -------------
@@ -106,3 +79,4 @@ TODOs:
 
  - Make script more robust against corrupt files (the challenge files
    were fortunately not currupted
+ - Update with automated languate recognition.

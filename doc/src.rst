@@ -55,6 +55,15 @@ src.constants module
     :undoc-members:
     :show-inheritance:
 
+src.myNLTK module
+--------------------
+
+.. automodule:: src.myNLTK
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 src.run_matching module
 -----------------------
 
