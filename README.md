@@ -1,10 +1,5 @@
-.. Sortable Challenge 2016 documentation master file, created by
-   sphinx-quickstart on Fri Apr 29 15:36:43 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Sortable Challenge 2016's documentation!
-===================================================
+Welcome to Sortable Challenge 2016 README
+=========================================
 
 This is Albert Heinle's submission to the challenge as given by the
 company "Sortable" (http://sortable.com/challenge/).
@@ -37,6 +32,12 @@ made use of
 **Remark:** The `d all` command downloads the whole nltk
 functionality, and that might take a moment (depending on your
 internet connection).
+
+**Another Remark:** If you have trouble to install nltk, I have
+written my own primitive tokenizer in the branch `without_nltk` of
+this repository. However, this tokenizer is not as accurate, and one
+might have less sound results with it compared to the results we would
+get with nltk.
 
 
 A Quick Test:
@@ -79,20 +80,9 @@ project (like number of threads, size of the chunk that each thread
 is working on, output folder path etc.). These parameters can be set
 in `src/constants.py`.
 
-Module overview:
-----------------
+Results:
+--------
 
-.. toctree::
-   :maxdepth: 4
-
-   modules
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+I ran the script ran on my machine (Intel core i5, ~2.4GHz, 16GB RAM)
+and it took about 2 minutes total time for the challenge data. The
+results file produced was about 1.4MB big.
