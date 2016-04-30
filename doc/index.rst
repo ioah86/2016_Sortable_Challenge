@@ -85,6 +85,9 @@ TODOs
 
  - Make script more robust against corrupt files (the challenge files
    were fortunately not currupted
+ - Currently, NLTK is not used in its full potential. Introduce
+   language recognition of postings and adapt algorithm accordingly
+   (like information separator words we are currently using, e.g. 'for')
 
 
 Module overview:
