@@ -80,9 +80,29 @@ project (like number of threads, size of the chunk that each thread
 is working on, output folder path etc.). These parameters can be set
 in `src/constants.py`.
 
+
+Generating the Documentation
+----------------------------
+
+I used Sphinx to auto-generate the documentation of the project. In
+order to obtain a documentation, go to the subfolder `doc` and run::
+
+  $> make html
+
+to get a documentation in HTML format. One can find the root
+documentation file afterwards in `doc/_build/html/index.html`.
+
+
 Results:
 --------
 
 I ran the script ran on my machine (Intel core i5, ~2.4GHz, 16GB RAM)
 and it took about 2 minutes total time for the challenge data. The
 results file produced was about 1.4MB big.
+
+
+TODOs:
+------
+
+ - Make script more robust against corrupt files (the challenge files
+   were fortunately not currupted

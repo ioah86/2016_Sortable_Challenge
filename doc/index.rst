@@ -79,6 +79,14 @@ project (like number of threads, size of the chunk that each thread
 is working on, output folder path etc.). These parameters can be set
 in `src/constants.py`.
 
+
+TODOs
+-----
+
+ - Make script more robust against corrupt files (the challenge files
+   were fortunately not currupted
+
+
 Module overview:
 ----------------
 
