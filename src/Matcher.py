@@ -10,9 +10,6 @@ from nltk.tokenize import word_tokenize
 import os
 import logging
 
-logging.basicConfig(level = logging.DEBUG,
-                    handlers = [logging.FileHandler("Matcher.log", mode="w")])
-
 
 class Matcher(multiprocessing.Process):
     """
@@ -56,6 +53,11 @@ class Matcher(multiprocessing.Process):
         self.__listings_chunk = listings_chunk
         self.__matches_dict = {}
         self.__result_path = result_path
+        logging.basicConfig(level = logging.DEBUG,
+                            handlers = [
+                                logging.FileHandler(
+                                    os.path.join(result_path,"Matcher.log"),
+                                    mode="w")])
 
     
     def __findPositionInHashTable(self,listing):
@@ -68,6 +70,9 @@ class Matcher(multiprocessing.Process):
 
         :param listing: The listing we try to find a position for
         :type  listing: Listing
+        :returns:       The String representing the product in the
+                        Hash table
+        :rtype:         String
         """
         manu_lower = listing.getManufacturer().lower()
         if manu_lower =="":
@@ -108,6 +113,9 @@ class Matcher(multiprocessing.Process):
 
         :param listing: The listing we try to find a position for
         :type  listing: Listing
+        :returns:       A tuple consisting of the matching value and
+                        the product
+        :rtype:         (Int, Product)
         """
         hashEntry = self.__findPositionInHashTable(listing)
         if hashEntry == "":
@@ -129,10 +137,12 @@ class Matcher(multiprocessing.Process):
         matchings had a matching factor of 1, empty list is returned.
 
         ASSUMPTIONS:
-        - There is more than one matching in the list
+         - There is more than one matching in the list
         
         :param matchings: The list of matchings
-        :type  matchings: list((Int, Product))
+        :type  matchings: [(Int, Product)]
+        :returns:         The list of most likely matchings
+        :rtype:           [(Int, Product)]
         """
         twoMatches = list(filter(lambda x: x[0] == 2,matchings))
         if len(twoMatches)<=1:
@@ -210,15 +220,17 @@ class Matcher(multiprocessing.Process):
         This function takes in a string s and a list of strings ts and
         determines if s can be found in ts (maybe by even merging some
         consecutive tokens).
-
+        
         Assumptions:
-        - the elements in ts are all lowercase and don't have the
-          symbols '-',' ' and '_'
-
+         - the elements in ts are all lowercase and don't have the
+           symbols '-',' ' and '_'
+        
         :param s:  The string we want to find
         :type  s:  String
         :param ts: The list of tokens where we want to find s
         :type  ts: [String]
+        :returns:  True, if s in ts, False otherwise
+        :rtype:    Bool
         """
         s = s.lower()
         s = "".join(list(filter(lambda x: not x in "_- ",s)))
@@ -231,6 +243,7 @@ class Matcher(multiprocessing.Process):
                 return True
             if not (tempString in s):
                 tempString = ""
+        return False
 
 
     def is_match(product, listing):
@@ -238,47 +251,56 @@ class Matcher(multiprocessing.Process):
         This function is passed a variable product of type Product,
         a variable listing of type Listing. It returns several possible
         values.
-        -1 - No way it is a match
-         0 - It could or could not be a match
-         1 - Manufacturer and Model are given
-         2 - Manufacturer, Model and family are found
+        
+         - -1: No way it is a match
+         - 0: It could or could not be a match
+         - 1: Manufacturer and Model are given
+         - 2: Manufacturer, Model and family are found
         
         The algorithm idea is the following:
-        - Tokenize the words in the title.
-        - If you find e.g. the words "for" or "with", delete this word and
-          anything after it, as it has nothing to do with the product.
-          The word "for" would describe what the product is used for,
-          and model numbers appearing afterwards would deceive, since
-          they can name other products.
-          The word "with" describes certain extras, that are usually
-          not provided in product descriptions.
-          A complete list of values as given in lowercase are provided
-          in constants.py.
-        - In the remaining tokens, try to find
-          - the manufacturer
-          - the family (if given)
-          - the model
-          While doing this, one has to keep in mind that there are
-          different ways to write a model name. e.g. a "Canon
-          PowerShot SX130 IS" may appear as "Canon powershot
-          SX-130-IS". For this implementation, we assume that we
-          should remove any letters like '_', '-' and ' ' and then try
-          to find  the model number or so. We return 1, if we find the
-          manufacturer and the model, and, if available, the family
-          in this simplistic model.
-          We return 0 if we find the manufacturer, the family (if
-          given), but not the model. For all the other cases we just
-          return -1.
+        
+         - Tokenize the words in the title.
+         - If you find e.g. the words "for" or "with", delete this
+           word and
+        
+        anything after it, as it has nothing to do with the product.
+        The word "for" would describe what the product is used for,
+        and model numbers appearing afterwards would deceive, since
+        they can name other products.
+        The word "with" describes certain extras, that are usually
+        not provided in product descriptions.
+        A complete list of values as given in lowercase are provided
+        in constants.py.
+        
+         - In the remaining tokens, try to find
+         - the manufacturer
+         - the family (if given)
+         - the model
+        
+        While doing this, one has to keep in mind that there are
+        different ways to write a model name. e.g. a "Canon
+        PowerShot SX130 IS" may appear as "Canon powershot
+        SX-130-IS". For this implementation, we assume that we
+        should remove any letters like '_', '-' and ' ' and then try
+        to find  the model number or so. We return 1, if we find the
+        manufacturer and the model, and, if available, the family
+        in this simplistic model.
+        We return 0 if we find the manufacturer, the family (if
+        given), but not the model. For all the other cases we just
+        return -1.
         
         Assumptions:
-        - The product and the listing manufacturer is the same
-        - 0 should technically never appear. But if it does, we should
-          log that.
-
+         - The product and the listing manufacturer is the same
+         - 0 should technically never appear. But if it does, we should
+           log that.
+        
         :param product: A product that is a potential match
         :type  product: Product
         :param listing: A listing that potentially matches product
         :type  listing: Listing
+        :returns:       A number representing the likeliness of the
+                        listing being matched to the product
+        :rtype:         Bool
         """
         token_title = word_tokenize(listing.getTitle())
         #finding words like "for" and "with"
@@ -298,27 +320,14 @@ class Matcher(multiprocessing.Process):
                              token_title_lc))
         #Now we try to find the model
         model = product.getModel().lower()
-        # model = "".join(list(filter(lambda x: not x in "_- ",model)))
-        # if model in merged_tt:
-        #     model_found = True
-        # else:
-        #     model_found = False
         model_found = Matcher.isInTokenizedString(model,merged_tt)
         #Now we try to find the manufacturer
         manufacturer = product.getManufacturer().lower()
-        # if manufacturer in merged_tt:
-        #     manu_found = True
-        # else:
-        #     manu_found = False
         manu_found = Matcher.isInTokenizedString(manufacturer,merged_tt)
         #if the family is given, we also try to find it:
         family = product.getFamily().lower()
         #family = "".join(list(filter(lambda x: not x in "_- ",family)))
         if family!="":
-            # if family in merged_tt:
-            #     family_found = True
-            # else:
-            #     family_found = False
             family_found = Matcher.isInTokenizedString(family,merged_tt)
         else:
             family_found = False

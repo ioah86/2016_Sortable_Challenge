@@ -49,18 +49,38 @@ class Product:
         self.__a_d          = a_d.strip()
 
     def getName(self):
+        """
+        :returns: The name of the product.
+        :rtype:   String
+        """
         return self.__name
     
     def getManufacturer(self):
+        """
+        :returns: The manufacturer of the product.
+        :rtype:   String
+        """
         return self.__manufacturer
 
     def getFamily(self):
+        """
+        :returns: The family of the product.
+        :rtype:   String
+        """
         return self.__family
 
     def getModel(self):
+        """
+        :returns: The model of the product.
+        :rtype:   String
+        """
         return self.__model
 
     def getAnnouncementDate(self):
+        """
+        :returns: The announced date of the product.
+        :rtype:   String
+        """
         return self.__a_d
 
     def __eq__(self,other):
@@ -85,6 +105,10 @@ Announced Date: %s"""%(self.__name,
                        self.__a_d)
 
     def toJSON(self):
+        """
+        :returns: The JSON representation of the product.
+        :rtype:   String
+        """
         jsonDict = {
             "product_name":self.__name,
             "manufacturer":self.__manufacturer,

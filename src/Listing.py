@@ -53,15 +53,31 @@ class Listing:
         
 
     def getTitle(self):
+        """
+        :returns: The title of the listing.
+        :rtype:   String
+        """
         return self.__title
 
     def getManufacturer(self):
+        """
+        :returns: The manufacturer of the listing.
+        :rtype:   String
+        """
         return self.__manufacturer
 
     def getCurrency(self):
+        """
+        :returns: The currency of the listing.
+        :rtype:   String
+        """
         return self.__currency
 
     def getPrice(self):
+        """
+        :returns: The price of the listing.
+        :rtype:   String
+        """
         return self.__price
 
     def __eq__(self,other):
@@ -83,6 +99,10 @@ Price: %s"""%(self.__title,
               self.__price)
 
     def toJSON(self):
+        """
+        :returns: The JSON representation of the listing.
+        :rtype:   String
+        """
         if self.__jsonString:
             return self.__jsonString
         jsonDict = {

@@ -5,6 +5,7 @@
 
 import json
 from Product import Product
+import logging
 
 class ProductIterator:
     """
@@ -43,8 +44,14 @@ class ProductIterator:
             self.__file.close()
             self.__file = None
             raise StopIteration()
-        product_dict = json.loads(line) #TODO: maybe make handle
-                                        #premature exit
+        try:
+            product_dict = json.loads(line)
+        except:
+            self.__file.close()
+            self.__file = None
+            logging.debug("Premature stop of product iteration due to\
+ invalid JSON line")
+            raise StopIteration()
         name = product_dict["product_name"]
         manufacturer = product_dict["manufacturer"]
         model = product_dict["model"]

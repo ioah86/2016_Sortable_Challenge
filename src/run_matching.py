@@ -3,8 +3,8 @@
 This is the main running file of the whole project.
 
 This file is run with two parameters, namely filenames that contain
-- The listings
-- The products
+ - The listings
+ - The products
 
 Then it creates as many threads as needed (number of parallel threads
 specified in constants.py) and splits the listings into chunks of a
@@ -20,6 +20,7 @@ from ListingIterator import ListingIterator
 from Matcher import Matcher
 import os
 import constants
+from datetime import datetime
 
 def get_products(products_file):
     """
@@ -30,6 +31,9 @@ def get_products(products_file):
     
     :param products_file: A file containing products
     :type  products_file: String
+    :returns:             A dictionary of Products, where the
+                          manufacturer is the key
+    :rtype:               {String:Product}
     """
     p_it = ProductIterator(products_file)
     products = {}
@@ -73,7 +77,8 @@ def run_matching(products_file,listings_file):
                         one_more = False
                         break
                 if len(chunk)>0:
-                    threads[i] = (Matcher(chunk_count,products,chunk))
+                    threads[i] = (Matcher(chunk_count,products,chunk,
+                                          resultPathForThisRun))
                     threads[i].start()
     for i in threads:
         if i != None:
@@ -90,7 +95,7 @@ def mergeFiles(products):
     :param products: A dictionary of products, hashed by manufacturer
     :type  products: dict(String:[Product])
     """
-    res = open(os.path.join(constants.result_path,
+    res = open(os.path.join(resultPathForThisRun,
                             constants.result_file),
                encoding='utf-8',
                mode="w")
@@ -99,8 +104,8 @@ def mergeFiles(products):
         prodArray = products[manu]
         for p in prodArray:
             entry_made = False
-            for f in os.listdir(constants.result_path):
-                if f.startswith(p.getName()):
+            for f in os.listdir(resultPathForThisRun):
+                if f.startswith(p.getName()) and f.endswith(".txt"):
                     if not entry_made:
                         begin_string = """{"product_name":"%s",\
 "listings":["""%p.getName()
@@ -112,11 +117,11 @@ def mergeFiles(products):
                         res.write(begin_string)
                     else:
                         res.write(",")
-                    file_obj = open(os.path.join(constants.result_path,f),'r')
+                    file_obj = open(os.path.join(resultPathForThisRun,f),'r')
                     lstngs = file_obj.read().strip()
                     file_obj.close()
                     res.write(lstngs)
-                    os.remove(os.path.join(constants.result_path,f))
+                    os.remove(os.path.join(resultPathForThisRun,f))
             if entry_made:
                 res.write("]}")
 
@@ -138,4 +143,7 @@ if __name__ == '__main__':
         parser.error("The products file was not a valid file")
     if (not os.path.isfile(opts.listings_file)):
         parser.error("The products file was not a valid file")
+    resultPathForThisRun = os.path.join(constants.result_path,
+                                        str(datetime.now()))
+    os.mkdir(resultPathForThisRun)
     run_matching(opts.products_file,opts.listings_file)
