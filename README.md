@@ -14,19 +14,19 @@ made use of
 - nltk (http://www.nltk.org/) - Natural language processing for Python.
   Steps to install::
 
-    $> pip3 install nltk
-    $> python3
-    Python 3.4.3 (default, Oct 14 2015, 20:28:29) 
-    [GCC 4.8.4] on linux
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import nltk
-    >>> nltk.download()
-    NLTK Downloader
-    ---------------------------------------------------------------------------
-    d) Download   l) List    u) Update   c) Config   h) Help   q) Quit
-    ---------------------------------------------------------------------------
-    Downloader> d all
-    
+        $> pip3 install nltk
+        $> python3
+        Python 3.4.3 (default, Oct 14 2015, 20:28:29) 
+        [GCC 4.8.4] on linux
+        Type "help", "copyright", "credits" or "license" for more information.
+        >>> import nltk
+        >>> nltk.download()
+        NLTK Downloader
+        ---------------------------------------------------------------------------
+        d) Download   l) List    u) Update   c) Config   h) Help   q) Quit
+        ---------------------------------------------------------------------------
+        Downloader> d all
+        
   and wait. Afterwards, exit the downloader and Python.
 - Sphinx (http://www.sphinx-doc.org/en) for the generation of the
   documentation (optional)
@@ -100,9 +100,12 @@ Results:
 --------
 
 I ran the script ran on my machine (Intel core i5, ~2.4GHz, 16GB RAM)
-and it took about 2 minutes total time for the challenge data. The
-results file produced was about 1.4MB big.
+on both versions that I have (with NLTK and without).
 
+- With NLTK, it took about 2 minutes total time for the challenge data. The
+  results file produced was about 1.4MB big.
+- Without NLTK, the computation took 30s and created a same size
+  result file as with NLTK.
 
 TODOs:
 ------
