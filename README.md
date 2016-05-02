@@ -8,7 +8,8 @@ System requirements
 -------------------
 
 I programmed this submission in Python 3. The version I tested it with
-is 3.4.3.. There are no additional packages required in this branch.
+is 3.4.3.. The only optional package needed is to build the
+documentation is Sphinx (http://www.sphinx-doc.org/en).
 
 **REMARK**: The main branch is using NLTK, and it does the job of
 word-tokenizing in a better way.
@@ -53,7 +54,6 @@ project (like number of threads, size of the chunk that each thread
 is working on, output folder path etc.). These parameters can be set
 in `src/constants.py`.
 
-
 Generating the Documentation
 ----------------------------
 
@@ -78,5 +78,5 @@ TODOs:
 ------
 
  - Make script more robust against corrupt files (the challenge files
-   were fortunately not currupted
+   were fortunately not corrupted
  - Update with automated languate recognition.
