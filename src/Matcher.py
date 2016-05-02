@@ -261,21 +261,19 @@ class Matcher(multiprocessing.Process):
         
          - Tokenize the words in the title.
          - If you find e.g. the words "for" or "with", delete this
-           word and
+           word and anything after it, as it has nothing to do with the product.
+           The word "for" would describe what the product is used for,
+           and model numbers appearing afterwards would deceive, since
+           they can name other products.
+           The word "with" describes certain extras, that are usually
+           not provided in product descriptions.
+           A complete list of values as given in lowercase are provided
+           in constants.py.
         
-        anything after it, as it has nothing to do with the product.
-        The word "for" would describe what the product is used for,
-        and model numbers appearing afterwards would deceive, since
-        they can name other products.
-        The word "with" describes certain extras, that are usually
-        not provided in product descriptions.
-        A complete list of values as given in lowercase are provided
-        in constants.py.
-        
-         - In the remaining tokens, try to find
-         - the manufacturer
-         - the family (if given)
-         - the model
+             - In the remaining tokens, try to find
+             - the manufacturer
+             - the family (if given)
+             - the model
         
         While doing this, one has to keep in mind that there are
         different ways to write a model name. e.g. a "Canon
