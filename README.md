@@ -38,7 +38,7 @@ internet connection).
 **Another Remark:** If you have trouble to install nltk, I have
 written my own primitive tokenizer in the branch `without_nltk` of
 this repository. However, this tokenizer is not as accurate, and one
-might have less sound results with it compared to the results we would
+might have less sound results compared to the results we would
 get with nltk.
 
 
