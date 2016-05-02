@@ -65,6 +65,10 @@ order to obtain a documentation, go to the subfolder `doc` and run::
 to get a documentation in HTML format. One can find the root
 documentation file afterwards in `doc/_build/html/index.html`.
 
+**REMARK:** Make sure your Sphinx version uses Python3 to interpret
+  the module files. Otherwise, there might be errors when running the
+  above command. 
+
 
 Results:
 --------
