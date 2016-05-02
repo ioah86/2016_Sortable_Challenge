@@ -31,10 +31,12 @@ made use of
     d) Download   l) List    u) Update   c) Config   h) Help   q) Quit
     ---------------------------------------------------------------------------
     Downloader> d all
+
+  and wait. Afterwards, exit the downloader and Python.
+
 - Sphinx (http://www.sphinx-doc.org/en) for the generation of the
   documentation (optional)
-    
-  and wait. Afterwards, exit the downloader and Python.
+
 
 **Remark:** The `d all` command downloads the whole nltk
 functionality, and that might take a moment (depending on your
