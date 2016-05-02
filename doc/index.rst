@@ -14,6 +14,8 @@ System requirements
 
 I programmed this submission in Python 3. The version I tested it with
 is 3.4.3.. There are no additional packages required in this branch.
+The only optional package needed is to build the
+documentation is Sphinx (http://www.sphinx-doc.org/en).
 
 **REMARK**: The main branch is using NLTK, and it does the job of
 word-tokenizing in a better way.
@@ -63,7 +65,7 @@ TODOs
 -----
 
  - Make script more robust against corrupt files (the challenge files
-   were fortunately not currupted
+   were fortunately not corrupted
  - Update with automated language recognition.
 
 Module overview:
