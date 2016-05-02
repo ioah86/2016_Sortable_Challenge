@@ -48,7 +48,7 @@ A Quick Test:
 All modules have respective test modules. If you have `nosetests3`
 installed, you can run::
 
-  $> nosetests3 -v
+        $> nosetests3 -v
 
 inside this project and if everything is OK, your system is properly
 set up.
@@ -68,7 +68,7 @@ The script that tries to do the matchings is called `run_matching.py`
 in the folder `src`. In order to run it with the sortable challenge
 files, go to the folder `src` and type::
 
-  $> python3 run_matching.py -p ../test_files/sortable_products.txt -l ../test_files/sortable_listings.txt
+        $> python3 run_matching.py -p ../test_files/sortable_products.txt -l ../test_files/sortable_listings.txt
 
 After that, there will be a folder `results` generated, with a
 subfolder named after the timestamp when the `run_matching.py` script
@@ -90,7 +90,7 @@ Generating the Documentation
 I used Sphinx to auto-generate the documentation of the project. In
 order to obtain a documentation, go to the subfolder `doc` and run::
 
-  $> make html
+        $> make html
 
 to get a documentation in HTML format. One can find the root
 documentation file afterwards in `doc/_build/html/index.html`.
