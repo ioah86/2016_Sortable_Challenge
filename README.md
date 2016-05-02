@@ -28,6 +28,8 @@ made use of
     Downloader> d all
     
   and wait. Afterwards, exit the downloader and Python.
+- Sphinx (http://www.sphinx-doc.org/en) for the generation of the
+  documentation (optional)
 
 **Remark:** The `d all` command downloads the whole nltk
 functionality, and that might take a moment (depending on your
@@ -75,6 +77,10 @@ a chunk of the listings at a time and writing their results into this
 folder. In the end, there will be one `results.txt` file left (and a
 log file), which contains the results of the computation.
 
+In order to generate the documentation, one has to go to the subfolder
+`doc` and run::
+  $> make html
+
 **Remark:** There are certain parameters that can be set for the
 project (like number of threads, size of the chunk that each thread
 is working on, output folder path etc.). These parameters can be set
@@ -105,7 +111,7 @@ TODOs:
 ------
 
  - Make script more robust against corrupt files (the challenge files
-   were fortunately not currupted
+   were fortunately not corrupted
  - Currently, NLTK is not used in its full potential. Introduce
    language recognition of postings and adapt algorithm accordingly
    (like information separator words we are currently using, e.g. 'for')
