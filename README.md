@@ -82,5 +82,5 @@ TODOs:
 ------
 
  - Make script more robust against corrupt files (the challenge files
-   were fortunately not corrupted
+   were fortunately not corrupted)
  - Update with automated languate recognition.
