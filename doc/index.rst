@@ -31,6 +31,8 @@ made use of
     d) Download   l) List    u) Update   c) Config   h) Help   q) Quit
     ---------------------------------------------------------------------------
     Downloader> d all
+- Sphinx (http://www.sphinx-doc.org/en) for the generation of the
+  documentation (optional)
     
   and wait. Afterwards, exit the downloader and Python.
 
@@ -84,7 +86,7 @@ TODOs
 -----
 
  - Make script more robust against corrupt files (the challenge files
-   were fortunately not currupted
+   were fortunately not corrupted
  - Currently, NLTK is not used in its full potential. Introduce
    language recognition of postings and adapt algorithm accordingly
    (like information separator words we are currently using, e.g. 'for')

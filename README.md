@@ -77,9 +77,6 @@ a chunk of the listings at a time and writing their results into this
 folder. In the end, there will be one `results.txt` file left (and a
 log file), which contains the results of the computation.
 
-In order to generate the documentation, one has to go to the subfolder
-`doc` and run::
-  $> make html
 
 **Remark:** There are certain parameters that can be set for the
 project (like number of threads, size of the chunk that each thread
