@@ -22,7 +22,7 @@ installed, you can run::
 
   $> nosetests3 -v
 
-inside this project and if everything is OK, your system is properly
+inside the `src` folder of this project and if everything is OK, your system is properly
 set up.
 
 
