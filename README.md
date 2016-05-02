@@ -70,8 +70,12 @@ Results:
 --------
 
 I ran the script ran on my machine (Intel core i5, ~2.4GHz, 16GB RAM)
-and it took about 2 minutes total time for the challenge data. The
-results file produced was about 1.4MB big.
+on both versions that I have (with NLTK and without).
+
+- With NLTK, it took about 2 minutes total time for the challenge data. The
+  results file produced was about 1.4MB big.
+- Without NLTK, the computation took 30s and created a same size
+  result file as with NLTK.
 
 
 TODOs:
