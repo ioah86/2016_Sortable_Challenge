@@ -283,8 +283,8 @@ class Matcher(multiprocessing.Process):
         SX-130-IS". For this implementation, we assume that we
         should remove any letters like '_', '-' and ' ' and then try
         to find  the model number or so. We return 1, if we find the
-        manufacturer and the model, and, if available, the family
-        in this simplistic model.
+        manufacturer and the model. If furthermore can find the family,
+        we return 2 in this simplistic model.
         We return 0 if we find the manufacturer, the family (if
         given), but not the model. For all the other cases we just
         return -1.
